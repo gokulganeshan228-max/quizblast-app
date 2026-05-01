@@ -110,7 +110,7 @@ function showPage(id){
 function escHtml(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
 /* ── API CONFIG ── */
-const API_BASE = 'http://localhost:3001/api';
+const API_BASE = 'https://quizblast-app.onrender.com/api';
 
 /* ── QuizDB — now calls the backend REST API ── */
 const QuizDB = {
