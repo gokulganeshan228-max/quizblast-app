@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>QuizBlast — Real-Time AI Quiz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Syne+Mono&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<!-- CANVAS & OVERLAYS -->
+<canvas id="bg-canvas"></canvas>
+<div class="scanlines"></div>
+<div class="vignette"></div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a class="logo" onclick="showPage('home')">
+    <div class="logo-bolt"></div>
+    QUIZBLAST
+  </a>
+  <div class="nav-links" id="nav-links">
+    <button class="btn-nav" onclick="showPage('admin')">Admin Panel</button>
+    <button class="btn-prime pulse" onclick="showPage('join')">Join Quiz →</button>
+  </div>
+</nav>
+
+<!-- ══════════════ PAGE: HOME ══════════════ -->
+<div id="page-home" class="page">
+
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-eyebrow"><div class="dot"></div>AI-Powered Real-Time Quizzes</div>
+      <h1 class="hero-title">
+        Learn Faster.<br>
+        <span class="gt-plasma">Play Smarter.</span>
+      </h1>
+      <p class="hero-sub">
+        Create instant AI-generated quizzes on any topic.
+        Host live competitions. Watch leaderboards explode in real time.
+      </p>
+      <div class="hero-actions">
+        <button class="btn-prime" style="padding:14px 32px;font-size:.95rem;" onclick="showPage('admin')">⚡ Create a Quiz</button>
+        <button class="btn-ghost" style="padding:13px 30px;" onclick="showPage('join')">🎮 Join a Game</button>
+      </div>
+      <div class="hero-stats">
+        <div class="hstat"><span class="hstat-n">∞</span><span class="hstat-l">Topics</span></div>
+        <div class="hstat"><span class="hstat-n gt-plasma">AI</span><span class="hstat-l">Powered</span></div>
+        <div class="hstat"><span class="hstat-n gt-lime">Live</span><span class="hstat-l">Leaderboard</span></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="holo-card">
+        <div class="hc-header">
+          <span class="hc-badge">QUESTION 3 / 10</span>
+          <span class="hc-timer-pill">⏱ 08s</span>
+        </div>
+        <div class="hc-body">
+          <div class="hc-q">What is the powerhouse of the cell?</div>
+          <div class="hc-opts">
+            <div class="hc-opt win">✓ Mitochondria</div>
+            <div class="hc-opt">Nucleus</div>
+            <div class="hc-opt">Ribosome</div>
+            <div class="hc-opt">Golgi Body</div>
+          </div>
+          <div class="hc-progress"><div class="hc-prog-fill"></div></div>
+        </div>
+      </div>
+      <div class="float-badge fb-gold">🥇 Alex — 2400 pts</div>
+      <div class="float-badge fb-elec">⚡ +250 Speed Bonus!</div>
+    </div>
+  </section>
+
+  <section class="features">
+    <span class="section-label">Features</span>
+    <h2 class="section-title">Everything to <span class="gt-plasma">host live quizzes</span></h2>
+    <div class="features-grid">
+      <div class="feat-card">
+        <div class="feat-icon-wrap">🤖</div>
+        <h3>AI Generator</h3>
+        <p>Enter any topic and our AI instantly creates engaging MCQ questions — no prep needed.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon-wrap">📱</div>
+        <h3>QR Code Join</h3>
+        <p>Players scan a QR code or click a link to join instantly from any device.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon-wrap">⏱️</div>
+        <h3>Timer Rounds</h3>
+        <p>Set custom time limits per question. Faster answers earn speed bonus points.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon-wrap">🏆</div>
+        <h3>Live Leaderboard</h3>
+        <p>Animated leaderboard updates after every question. Keep everyone on the edge.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>⚡ QuizBlast — Built for the future of learning</p>
+    <p>All rights reserved © 2025</p>
+  </footer>
+
+</div>
+
+<!-- ══════════════ PAGE: ADMIN ══════════════ -->
+<div id="page-admin" class="page hidden">
+  <div class="page-inner">
+
+    <div class="steps">
+      <div class="step-dot active" id="adm-step1">1</div>
+      <div class="step-line"></div>
+      <div class="step-dot" id="adm-step2">2</div>
+      <div class="step-line"></div>
+      <div class="step-dot" id="adm-step3">3</div>
+    </div>
+
+    <!-- META SECTION -->
+    <div id="adm-section-meta">
+      <h1 class="page-title">Create a <span class="gt-plasma">Quiz</span></h1>
+      <p class="page-sub">Fill in the details then add questions or let AI generate them.</p>
+
+      <div class="panel mb-24">
+        <div class="panel-inner">
+          <div class="form-group">
+            <label>Quiz Title *</label>
+            <input type="text" id="quiz-title" placeholder="e.g. World Geography Challenge"/>
+          </div>
+          <div class="form-group">
+            <label>Description (optional)</label>
+            <input type="text" id="quiz-desc" placeholder="A short tagline for participants"/>
+          </div>
+          <div class="form-group">
+            <label>Default Time Per Question</label>
+            <select id="default-time">
+              <option value="10">10 seconds</option>
+              <option value="15" selected>15 seconds</option>
+              <option value="20">20 seconds</option>
+              <option value="30">30 seconds</option>
+              <option value="45">45 seconds</option>
+              <option value="60">60 seconds</option>
+            </select>
+          </div>
+
+          <div class="divider"></div>
+          <div class="mb-16 fw8" style="display:flex;align-items:center;gap:10px;">
+            <span style="font-size:1.1rem;">🤖</span>
+            <span style="font-family:'Syne',sans-serif;font-size:1rem;">AI Question Generator</span>
+          </div>
+          <div class="form-group">
+            <label>Topic</label>
+            <div class="flex gap-12" style="flex-wrap:wrap;">
+              <input type="text" id="ai-topic" placeholder="e.g. Space Exploration, Python Programming..." style="flex:1;min-width:200px;"/>
+              <input type="number" id="ai-count" value="8" min="1" max="50" placeholder="# of questions"
+                style="width:150px;text-align:center;font-family:'Syne Mono',monospace;font-size:1rem;"
+                title="Enter any number of questions (1–50)"/>
+            </div>
+          </div>
+          <button class="btn-prime" id="ai-generate-btn" onclick="adminGenerateWithAI()">🤖 Generate with AI</button>
+        </div>
+      </div>
+
+      <!-- AI LOADER -->
+      <div class="panel hidden mb-24" id="ai-loader-box">
+        <div class="ai-loader">
+          <div class="ai-spinner"></div>
+          <p id="ai-status-text">Generating questions with AI...</p>
+          <p class="text-sm text-dim">This may take 10–20 seconds</p>
+        </div>
+      </div>
+
+      <!-- QUESTIONS LIST -->
+      <div id="questions-section">
+        <div class="flex justify-between items-center mb-16">
+          <div class="flex items-center gap-12">
+            <span style="font-family:'Syne',sans-serif;font-weight:700;">Questions</span>
+            <span class="chip" id="q-count">0</span>
+          </div>
+          <button class="btn-ghost" style="padding:9px 18px;font-size:.82rem;" onclick="addBlankQuestion()">+ Add Manually</button>
+        </div>
+        <div id="questions-list"></div>
+      </div>
+
+      <div class="mt-32">
+        <button class="btn-prime" onclick="publishQuiz()" style="width:100%;justify-content:center;padding:16px;font-size:1rem;">
+          🚀 Publish Quiz &amp; Get Link
+        </button>
+      </div>
+    </div>
+
+    <!-- PUBLISHED SECTION -->
+    <div id="adm-section-published" class="hidden">
+      <h1 class="page-title">Quiz <span class="gt-lime">Live!</span></h1>
+      <p class="page-sub">Share the link or QR code with participants.</p>
+
+      <div class="panel text-center mb-24">
+        <div class="panel-inner">
+          <p class="text-dim text-sm mb-16 font-mono" style="letter-spacing:.1em;text-transform:uppercase;">Game PIN</p>
+          <div class="pin-display" id="quiz-pin-display">------</div>
+          <p class="text-dim text-sm mt-16">Share this PIN or the link below</p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-inner">
+          <div class="flex gap-16" style="flex-wrap:wrap;align-items:flex-start;justify-content:center;">
+            <div>
+              <p class="text-dim text-sm mb-8 fw7 font-mono" style="letter-spacing:.08em;text-transform:uppercase;">QR Code</p>
+              <div class="qr-box" id="qr-container"></div>
+            </div>
+            <div style="flex:1;min-width:260px;">
+              <p class="text-dim text-sm mb-8 fw7 font-mono" style="letter-spacing:.08em;text-transform:uppercase;">Join Link</p>
+              <div style="display:flex;gap:10px;align-items:center;">
+                <input type="text" id="share-link" readonly style="flex:1;cursor:pointer;font-family:'Syne Mono',monospace;font-size:.82rem;"/>
+                <button class="btn-success" onclick="copyLink()">Copy</button>
+              </div>
+              <div class="divider"></div>
+              <p style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;" id="pub-quiz-title"></p>
+              <p class="text-dim text-sm mt-8 font-mono" id="pub-quiz-questions"></p>
+              <div class="mt-16">
+                <button class="btn-prime" onclick="openHostPage()">🎮 Open Host Dashboard</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ PAGE: JOIN ══════════════ -->
+<div id="page-join" class="page hidden">
+  <div class="page-inner" style="max-width:480px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding-top:80px;">
+
+    <!-- Step PIN -->
+    <div id="join-step-pin" style="width:100%">
+      <div class="text-center mb-24">
+        <div style="font-size:3.5rem;margin-bottom:16px;">🎮</div>
+        <h1 class="page-title" style="font-size:2.2rem;">Join a <span class="gt-plasma">Quiz</span></h1>
+        <p class="text-dim">Enter the game PIN from your host</p>
+      </div>
+      <div class="panel">
+        <div class="panel-inner">
+          <div class="form-group">
+            <label>Game PIN</label>
+            <input type="text" id="pin-input" placeholder="000000" maxlength="6"
+              style="font-size:2.5rem;text-align:center;letter-spacing:.25em;font-family:'Syne Mono',sans-serif;padding:18px;"
+              oninput="this.value=this.value.replace(/\D/g,'')"/>
+          </div>
+          <button class="btn-prime w-full" style="justify-content:center;padding:14px;" onclick="checkPin()">Find Game →</button>
+          <p class="text-dim text-sm text-center mt-16" style="color:var(--heat);" id="pin-error"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step Name -->
+    <div id="join-step-name" class="hidden" style="width:100%">
+      <div class="text-center mb-24">
+        <div style="font-size:3.5rem;margin-bottom:16px;">✏️</div>
+        <h1 class="page-title" style="font-size:2.2rem;">Your <span class="gt-plasma">name?</span></h1>
+        <p class="text-dim" id="quiz-found-title"></p>
+      </div>
+      <div class="panel">
+        <div class="panel-inner">
+          <div class="form-group">
+            <label>Nickname</label>
+            <input type="text" id="name-input" placeholder="StarPlayer99" maxlength="20" style="font-size:1.4rem;text-align:center;font-family:'Syne',sans-serif;font-weight:700;"/>
+          </div>
+          <button class="btn-prime w-full" style="justify-content:center;padding:14px;" onclick="joinGame()">🚀 Join Game</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step Wait -->
+    <div id="join-step-wait" class="hidden" style="width:100%;text-align:center;">
+      <div class="wait-icon mb-24">⏳</div>
+      <h2 class="page-title" style="font-size:2rem;">Waiting for <span class="gt-electric">Host</span></h2>
+      <p class="text-dim mb-24" id="join-wait-name"></p>
+      <div class="panel">
+        <div class="panel-inner">
+          <p class="text-dim text-sm mb-16 font-mono" style="letter-spacing:.1em;text-transform:uppercase;">Players in lobby</p>
+          <div class="big-num gt-lime" id="join-lobby-players">—</div>
+          <div class="divider"></div>
+          <p class="text-sm text-dim">The host will start the quiz shortly. Get ready!</p>
+        </div>
+      </div>
+      <div class="mt-24"><div class="ai-spinner" style="margin:0 auto;"></div></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════ PAGE: HOST ══════════════ -->
+<div id="page-host" class="page hidden">
+  <div class="page-inner" style="max-width:900px;">
+
+    <!-- Lobby -->
+    <div id="host-view-lobby">
+      <div class="flex justify-between items-center mb-24" style="flex-wrap:wrap;gap:16px;">
+        <div>
+          <h1 class="page-title mb-8">Lobby <span class="gt-lime">Open</span></h1>
+          <p class="text-dim" id="host-lobby-quiz-title"></p>
+        </div>
+        <button class="btn-prime" style="padding:14px 32px;" onclick="hostStartQuiz()">▶ Start Quiz</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
+        <div class="panel text-center">
+          <div class="panel-inner">
+            <p class="text-dim text-sm mb-12 font-mono" style="letter-spacing:.1em;text-transform:uppercase;">Game PIN</p>
+            <div class="pin-display" style="font-size:3rem;" id="host-pin-display">---</div>
+          </div>
+        </div>
+        <div class="panel text-center">
+          <div class="panel-inner">
+            <p class="text-dim text-sm mb-12 font-mono" style="letter-spacing:.1em;text-transform:uppercase;">Players Joined</p>
+            <div class="big-num gt-lime" id="host-player-count">0</div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-inner">
+          <p class="fw7 mb-16" style="font-family:'Syne',sans-serif;">👥 Players</p>
+          <div id="host-players-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;min-height:60px;">
+            <p class="text-dim text-sm">Waiting for players...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Question View -->
+    <div id="host-view-question" class="hidden">
+      <div class="quiz-header">
+        <div>
+          <p class="text-dim text-sm font-mono" id="host-q-progress-label">Question 1 of 10</p>
+          <h2 id="host-q-text" style="font-size:1.3rem;font-weight:700;max-width:600px;margin-top:8px;line-height:1.4;font-family:'Syne',sans-serif;"></h2>
+        </div>
+        <div class="timer-ring-wrap">
+          <div class="timer-ring" style="width:88px;height:88px;">
+            <svg width="88" height="88" viewBox="0 0 100 100">
+              <circle class="timer-ring-bg" cx="50" cy="50" r="42"/>
+              <circle class="timer-ring-fg" id="host-timer-circle" cx="50" cy="50" r="42" stroke-dasharray="264" stroke-dashoffset="0"/>
+            </svg>
+            <div class="timer-num" id="host-timer-num" style="font-size:1.7rem;">15</div>
+          </div>
+        </div>
+      </div>
+      <div class="progress-bar-wrap mb-20">
+        <div class="progress-bar-fill" id="host-progress" style="width:0%"></div>
+      </div>
+      <div class="panel mb-20">
+        <div class="panel-inner" style="padding:20px;">
+          <div class="answer-options" id="host-options"></div>
+        </div>
+      </div>
+      <div class="flex justify-between items-center" style="flex-wrap:wrap;gap:14px;">
+        <div class="answered-badge">
+          <span class="big" id="host-answered-count">0</span>
+          <span class="small">/</span>
+          <span class="big" id="host-total-players-count">0</span>
+          <span class="small">answered</span>
+        </div>
+        <div style="display:flex;gap:10px;">
+          <button class="btn-ghost" style="padding:10px 18px;font-size:.82rem;" onclick="hostSkipTimer()">⏩ Skip Timer</button>
+          <button class="btn-prime" id="host-next-btn" onclick="hostNextQuestion()" style="display:none;">Next →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Leaderboard View -->
+    <div id="host-view-leaderboard" class="hidden">
+      <div class="flex justify-between items-center mb-24">
+        <h2 class="page-title">🏆 <span class="gt-volt">Leaderboard</span></h2>
+        <button class="btn-ghost" style="padding:10px 20px;" id="host-lb-next-btn" onclick="hostContinueFromLeaderboard()">Next Question →</button>
+      </div>
+      <div class="leaderboard" id="host-leaderboard"></div>
+    </div>
+
+    <!-- Final View -->
+    <div id="host-view-final" class="hidden">
+      <div class="text-center mb-32">
+        <div style="font-size:5rem;margin-bottom:16px;">🎉</div>
+        <h1 class="page-title" style="font-size:3rem;">Quiz <span class="gt-plasma">Complete!</span></h1>
+        <p class="text-dim">Final standings</p>
+      </div>
+      <div class="leaderboard" id="host-final-leaderboard"></div>
+      <div class="text-center mt-32">
+        <button class="btn-prime" onclick="resetAdmin();showPage('admin')">+ Create New Quiz</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════ PAGE: PLAY ══════════════ -->
+<div id="page-play" class="page hidden">
+  <div class="page-inner" style="max-width:580px;padding-top:80px;">
+
+    <!-- Waiting -->
+    <div id="play-view-waiting" class="text-center" style="padding-top:15vh;">
+      <div class="wait-icon mb-24">🎯</div>
+      <h2 class="page-title" style="font-size:2.2rem;">Get <span class="gt-plasma">Ready!</span></h2>
+      <p class="text-dim mb-24">Waiting for the host to start...</p>
+      <div class="ai-spinner" style="margin:0 auto;"></div>
+    </div>
+
+    <!-- Question -->
+    <div id="play-view-question" class="hidden">
+      <div class="quiz-header">
+        <div><p class="text-dim text-sm font-mono" id="play-q-progress">Question 1 of 10</p></div>
+        <div class="timer-ring-wrap" style="margin:0;">
+          <div class="timer-ring" style="width:68px;height:68px;">
+            <svg width="68" height="68" viewBox="0 0 100 100">
+              <circle class="timer-ring-bg" cx="50" cy="50" r="42"/>
+              <circle class="timer-ring-fg" id="play-timer-circle" cx="50" cy="50" r="42" stroke-dasharray="264" stroke-dashoffset="0"/>
+            </svg>
+            <div class="timer-num" id="play-timer-num" style="font-size:1.4rem;">15</div>
+          </div>
+        </div>
+      </div>
+      <div class="progress-bar-wrap mb-20">
+        <div class="progress-bar-fill" id="play-my-progress" style="width:0%"></div>
+      </div>
+      <div class="panel mb-20">
+        <div class="panel-inner">
+          <p class="text-dim text-sm mb-12 font-mono fw7" style="letter-spacing:.1em;text-transform:uppercase;" id="play-q-label">QUESTION</p>
+          <h2 id="play-q-text" style="font-size:1.3rem;font-weight:700;line-height:1.45;font-family:'Syne',sans-serif;"></h2>
+        </div>
+      </div>
+      <div class="answer-options" id="play-answer-options"></div>
+      <div id="play-answer-feedback" class="hidden panel text-center mt-20" style="padding:24px;">
+        <div id="play-feedback-icon" style="font-size:2.8rem;margin-bottom:10px;"></div>
+        <div id="play-feedback-text" style="font-size:1.15rem;font-weight:700;font-family:'Syne',sans-serif;"></div>
+        <div id="play-feedback-points" style="font-size:.82rem;color:var(--text-dim);margin-top:6px;font-family:'Syne Mono',monospace;"></div>
+      </div>
+    </div>
+
+    <!-- Leaderboard -->
+    <div id="play-view-leaderboard" class="hidden">
+      <h2 class="page-title mb-20">🏆 <span class="gt-volt">Standings</span></h2>
+      <div class="panel mb-14">
+        <div class="panel-inner" style="display:flex;gap:14px;align-items:center;padding:18px 22px;">
+          <span style="font-size:1.8rem;">📊</span>
+          <div>
+            <p class="text-dim text-sm mb-4 font-mono" style="text-transform:uppercase;letter-spacing:.08em;">Your score</p>
+            <p style="font-family:'Syne Mono',monospace;font-size:1.8rem;color:var(--electric);font-weight:700;" id="play-my-score-big">0 pts</p>
+          </div>
+        </div>
+      </div>
+      <div class="leaderboard" id="play-leaderboard"></div>
+      <p class="text-dim text-center text-sm mt-20 font-mono">Next question incoming...</p>
+      <div class="ai-spinner" style="margin:20px auto 0;"></div>
+    </div>
+
+    <!-- Final -->
+    <div id="play-view-final" class="hidden text-center">
+      <div style="font-size:5rem;margin-bottom:20px;">🎊</div>
+      <h1 class="page-title" style="font-size:2.8rem;">Quiz <span class="gt-plasma">Over!</span></h1>
+      <p class="text-dim mb-28">Thanks for playing!</p>
+      <div class="panel mb-20">
+        <div class="panel-inner">
+          <p class="text-dim text-sm mb-8 font-mono" style="text-transform:uppercase;letter-spacing:.08em;">Your Final Score</p>
+          <div class="big-num gt-volt" id="play-final-score">0</div>
+        </div>
+      </div>
+      <div class="leaderboard mb-24" id="play-final-leaderboard"></div>
+      <button class="btn-prime" onclick="showPage('home')">Play Again ⚡</button>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
